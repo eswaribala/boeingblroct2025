@@ -3,7 +3,11 @@
 
 
 //create objects of the Customer class
+using CustomerApp.Controllers;
 using CustomerApp.Models;
+using CustomerApp.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 /*
  Tightly coupld code
 Customer customer = new Customer
@@ -34,3 +38,34 @@ Console.WriteLine("--------------------------------------------------");
 
 Console.ReadKey();
 */
+
+
+//DI
+var host=Host.CreateDefaultBuilder(args)
+    .ConfigureServices((context, services) =>
+    {
+        // Register services here
+        services.AddTransient<ICustomerService, IndividualService>();
+        //services.AddSingleton<ICustomerService, CorporateService>();
+    })
+    .Build();
+// Resolve and run
+var app = host.Services.GetRequiredService<CustomerController>();
+app.AddCustomer(new Individual
+{
+    CustomerId = Faker.RandomNumber.Next(100, 10000),
+    Name = new FullName { FirstName = Faker.Name.First(), LastName = Faker.Name.Last() },
+    Address = new Address
+    {
+        DoorNo = Faker.Company.BS(),
+        Street = Faker.Address.StreetSuffix(),
+        City = Faker.Address.CitySuffix(),
+        State = Faker.Address.CitySuffix(),
+        ZipCode = Faker.Address.ZipCode()
+    },
+    Email = Faker.Internet.Email(),
+    Password = Faker.Identification.UsPassportNumber(),
+    PhoneNumber = Faker.Phone.Number(),
+    DateOfBirth = DateOnly.FromDateTime(Faker.Identification.DateOfBirth())
+});
+Console.ReadKey();
