@@ -4,7 +4,8 @@
 
 //create objects of the Customer class
 using CustomerApp.Models;
-
+/*
+ Tightly coupld code
 Customer customer = new Customer
 {
     CustomerId = Faker.RandomNumber.Next(100,10000),
@@ -32,3 +33,4 @@ Console.WriteLine($"Customer Password: {customer.Password}");
 Console.WriteLine("--------------------------------------------------");
 
 Console.ReadKey();
+*/
