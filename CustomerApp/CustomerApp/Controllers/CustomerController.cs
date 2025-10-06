@@ -29,7 +29,7 @@ namespace CustomerApp.Controllers
         {
             return _customerService.GetAllCustomers();
         }
-        public bool UpdateCustomer(Models.Customer newCustomer)
+        public bool UpdateCustomer(Customer newCustomer)
         {
             return _customerService.UpdateCustomer(newCustomer);
         }
