@@ -12,7 +12,7 @@ namespace CustomerApp.Services
         void AddCustomer(Customer customer);
         Customer GetCustomerById(long id);
         IEnumerable<Customer> GetAllCustomers();
-        void UpdateCustomer(Customer newCustomer);
-        void DeleteCustomer(long id);
+        bool UpdateCustomer(Customer newCustomer);
+        bool DeleteCustomer(long id);
     }
 }
