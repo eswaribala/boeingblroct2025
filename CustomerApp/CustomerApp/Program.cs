@@ -51,7 +51,7 @@ var host=Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
         //configure kafka settings
-        services.Configure<KafkaServer>(context.Configuration.GetSection("KafkaSettings"));
+        services.Configure<KafkaServer>(context.Configuration.GetSection("KafkaServer"));
         // Register services here
         services.AddTransient<ICustomerService, IndividualService>();
         //register controller

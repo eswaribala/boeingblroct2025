@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CustomerApp.Services;
 using CustomerApp.Models;
 using CustomerApp.DTOS;
+using Microsoft.Extensions.Options;
 
 namespace CustomerApp.Controllers
 {
@@ -15,10 +16,10 @@ namespace CustomerApp.Controllers
         private readonly ICustomerService _customerService;
         private readonly KafkaServer _kafkaServer;
         //DI
-        public CustomerController(ICustomerService customerService,KafkaServer kafkaServer)
+        public CustomerController(ICustomerService customerService,IOptions<KafkaServer> kafkaServer)
         {
             _customerService = customerService;
-            _kafkaServer = kafkaServer;
+            _kafkaServer = kafkaServer.Value;
         }
         public void AddCustomer(Customer customer)
         {

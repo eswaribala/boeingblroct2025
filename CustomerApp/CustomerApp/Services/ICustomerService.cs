@@ -9,10 +9,10 @@ namespace CustomerApp.Services
 {
     public interface ICustomerService
     {
-        void AddCustomer(Customer customer);
-        Customer GetCustomerById(long id);
-        IEnumerable<Customer> GetAllCustomers();
-        bool UpdateCustomer(Customer newCustomer);
-        bool DeleteCustomer(long id);
+        Task AddCustomer(Customer customer);
+        Task<Customer> GetCustomerById(long id);
+        Task<IEnumerable<Customer>> GetAllCustomers();
+        Task<bool> UpdateCustomer(Customer newCustomer);
+        Task<bool> DeleteCustomer(long id);
     }
 }

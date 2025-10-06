@@ -15,35 +15,39 @@ namespace CustomerApp.Services
             customers = new List<Customer>();
         }
 
-        public void AddCustomer(Customer customer)
+        public async Task AddCustomer(Customer customer)
         {
             customers.Add(customer);
+            await Task.Delay(10000);
         }
 
-        public bool DeleteCustomer(long id)
+        public async Task<bool> DeleteCustomer(long id)
         {
             bool isDeleted = false;
             var customer = customers.FirstOrDefault(c => c.CustomerId == id);
             if (customer != null)
             {
                 customers.Remove(customer);
+                await Task.Delay(1000);
                 isDeleted = true;
             }
             return isDeleted;
 
         }
 
-        public IEnumerable<Customer> GetAllCustomers()
+        public async Task<IEnumerable<Customer>> GetAllCustomers()
         {
+            await Task.Delay(1000);
             return customers;
         }
 
-        public Customer GetCustomerById(long id)
+        public async Task<Customer> GetCustomerById(long id)
         {
-          return customers.FirstOrDefault(c => c.CustomerId == id);
+            await Task.Delay(1000);
+            return customers.FirstOrDefault(c => c.CustomerId == id);
         }
 
-        public bool UpdateCustomer(Customer newCustomer)
+        public async Task<bool> UpdateCustomer(Customer newCustomer)
         {
             bool isUpdated = false;
             var customer = customers.FirstOrDefault(c => c.CustomerId == newCustomer.CustomerId);
@@ -56,6 +60,7 @@ namespace CustomerApp.Services
                 customer.Password = newCustomer.Password;
                 isUpdated = true;
             }
+            await Task.Delay(1000);
             return isUpdated;
         }
     }
