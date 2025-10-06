@@ -46,6 +46,8 @@ var host=Host.CreateDefaultBuilder(args)
     {
         // Register services here
         services.AddTransient<ICustomerService, IndividualService>();
+        //register controller
+        services.AddTransient<CustomerController>();
         //services.AddSingleton<ICustomerService, CorporateService>();
     })
     .Build();
@@ -68,4 +70,6 @@ app.AddCustomer(new Individual
     PhoneNumber = Faker.Phone.Number(),
     DateOfBirth = DateOnly.FromDateTime(Faker.Identification.DateOfBirth())
 });
+
+Console.WriteLine("Customer added successfully. Press any key to exit...");
 Console.ReadKey();
