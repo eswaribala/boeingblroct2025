@@ -14,12 +14,13 @@ namespace CustomerApp.Services
         {
             _individuals = new List<Individual>();
         }
-        public void AddCustomer(Customer customer)
+        public async Task AddCustomer(Customer customer)
         {
            _individuals.Add((Individual)customer);
+              await Task.Delay(1000);
         }
 
-        public bool DeleteCustomer(long id)
+        public async Task<bool> DeleteCustomer(long id)
         {
             bool isDeleted = false;
             var individual = _individuals.FirstOrDefault(i => i.CustomerId == id);
@@ -28,20 +29,23 @@ namespace CustomerApp.Services
                 _individuals.Remove(individual);
                 isDeleted = true;
             }
+            await Task.Delay(1000);
             return isDeleted;
         }
 
-        public IEnumerable<Customer> GetAllCustomers()
+        public async Task<IEnumerable<Customer>> GetAllCustomers()
         {
+            await Task.Delay(1000);
             return _individuals;
         }
 
-        public Customer GetCustomerById(long id)
+        public async Task<Customer> GetCustomerById(long id)
         {
+            await Task.Delay(1000);
             return _individuals.FirstOrDefault(i => i.CustomerId == id);
         }
 
-        public bool UpdateCustomer(Customer newCustomer)
+        public async Task<bool> UpdateCustomer(Customer newCustomer)
         {
             var individual = _individuals.FirstOrDefault(i => i.CustomerId == newCustomer.CustomerId);
             bool isUpdated = false;
@@ -55,6 +59,7 @@ namespace CustomerApp.Services
                 individual.DateOfBirth = ((Individual)newCustomer).DateOfBirth;
                 isUpdated = true;
             }
+            await Task.Delay(1000);
             return isUpdated;
 
         }

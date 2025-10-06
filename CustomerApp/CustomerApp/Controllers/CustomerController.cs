@@ -21,27 +21,27 @@ namespace CustomerApp.Controllers
             _customerService = customerService;
             _kafkaServer = kafkaServer.Value;
         }
-        public void AddCustomer(Customer customer)
+        public async Task AddCustomer(Customer customer)
         {
-            _customerService.AddCustomer(customer);
+            await _customerService.AddCustomer(customer);
         }
-        public Models.Customer GetCustomerById(long id)
+        public async Task<Customer> GetCustomerById(long id)
         {
-            return _customerService.GetCustomerById(id);
+            return await _customerService.GetCustomerById(id);
         }
-        public IEnumerable<Customer> GetAllCustomers()
+        public async Task<IEnumerable<Customer>> GetAllCustomers()
         {
             Console.WriteLine("Kafka Server Details:");
             Console.WriteLine($"BootstrapServers: {_kafkaServer.Host}");
-            return _customerService.GetAllCustomers();
+            return await _customerService.GetAllCustomers();
         }
-        public bool UpdateCustomer(Customer newCustomer)
+        public async Task<bool> UpdateCustomer(Customer newCustomer)
         {
-            return _customerService.UpdateCustomer(newCustomer);
+            return await _customerService.UpdateCustomer(newCustomer);
         }
-        public bool DeleteCustomer(long id)
+        public async Task<bool> DeleteCustomer(long id) 
         {
-            return _customerService.DeleteCustomer(id);
+            return await _customerService.DeleteCustomer(id);
         }
 
     }

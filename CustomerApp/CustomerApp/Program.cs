@@ -61,7 +61,7 @@ var host=Host.CreateDefaultBuilder(args)
     .Build();
 // Resolve and run
 var app = host.Services.GetRequiredService<CustomerController>();
-app.AddCustomer(new Individual
+await app.AddCustomer(new Individual
 {
     CustomerId = Faker.RandomNumber.Next(100, 10000),
     Name = new FullName { FirstName = Faker.Name.First(), LastName = Faker.Name.Last() },
@@ -80,7 +80,7 @@ app.AddCustomer(new Individual
 });
 
 Console.WriteLine("Customer added successfully. Press any key to exit...");
-app.GetAllCustomers().ToList().ForEach(c =>
+app.GetAllCustomers().Result.ToList().ForEach(c =>
 {
     Console.WriteLine($"Customer ID: {c.CustomerId}");
     Console.WriteLine($"Customer Name: {c.Name.FirstName} {c.Name.LastName}");
