@@ -72,4 +72,17 @@ app.AddCustomer(new Individual
 });
 
 Console.WriteLine("Customer added successfully. Press any key to exit...");
-Console.ReadKey();
+app.GetAllCustomers().ToList().ForEach(c =>
+{
+    Console.WriteLine($"Customer ID: {c.CustomerId}");
+    Console.WriteLine($"Customer Name: {c.Name.FirstName} {c.Name.LastName}");
+    Console.WriteLine($"Customer Address: {c.Address.DoorNo}, {c.Address.Street}, {c.Address.City}, {c.Address.State} - {c.Address.ZipCode}");
+    Console.WriteLine($"Customer Email: {c.Email}");
+    Console.WriteLine($"Customer Phone Number: {c.PhoneNumber}");
+    Console.WriteLine($"Customer Password: {c.Password}");
+    if (c is Individual individual)
+    {
+        Console.WriteLine($"Customer Date of Birth: {individual.DateOfBirth}");
+    }
+    Console.WriteLine("--------------------------------------------------");
+});
