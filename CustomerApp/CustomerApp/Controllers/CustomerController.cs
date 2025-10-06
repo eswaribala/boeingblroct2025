@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CustomerApp.Services;
 using CustomerApp.Models;
+using CustomerApp.DTOS;
 
 namespace CustomerApp.Controllers
 {
@@ -12,10 +13,12 @@ namespace CustomerApp.Controllers
     {
 
         private readonly ICustomerService _customerService;
+        private readonly KafkaServer _kafkaServer;
         //DI
-        public CustomerController(ICustomerService customerService)
+        public CustomerController(ICustomerService customerService,KafkaServer kafkaServer)
         {
             _customerService = customerService;
+            _kafkaServer = kafkaServer;
         }
         public void AddCustomer(Customer customer)
         {
@@ -27,6 +30,8 @@ namespace CustomerApp.Controllers
         }
         public IEnumerable<Customer> GetAllCustomers()
         {
+            Console.WriteLine("Kafka Server Details:");
+            Console.WriteLine($"BootstrapServers: {_kafkaServer.Host}");
             return _customerService.GetAllCustomers();
         }
         public bool UpdateCustomer(Customer newCustomer)

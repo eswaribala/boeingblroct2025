@@ -4,8 +4,10 @@
 
 //create objects of the Customer class
 using CustomerApp.Controllers;
+using CustomerApp.DTOS;
 using CustomerApp.Models;
 using CustomerApp.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 /*
@@ -42,8 +44,14 @@ Console.ReadKey();
 
 //DI
 var host=Host.CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration((context, config) =>
+    {
+        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    })
     .ConfigureServices((context, services) =>
     {
+        //configure kafka settings
+        services.Configure<KafkaServer>(context.Configuration.GetSection("KafkaSettings"));
         // Register services here
         services.AddTransient<ICustomerService, IndividualService>();
         //register controller
