@@ -46,7 +46,7 @@ namespace CustomerApp.Services
 
         public bool UpdateCustomer(Customer newCustomer)
         {
-            var corporate = _corporates.FirstOrDefault(c => c.CustomerId == id);
+            var corporate = _corporates.FirstOrDefault(c => c.CustomerId == newCustomer.CustomerId);
             var isUpdated = false;
             var customer = newCustomer;
             if (corporate != null) {
