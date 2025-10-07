@@ -1,4 +1,5 @@
 ﻿using CustomerApp.Models;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,11 @@ namespace CustomerApp.Services
     public class CorporateService : ICustomerService
     {
         IList<Corporate> _corporates;
-        public CorporateService()
+        private readonly IMemoryCache _memoryCache;
+        public CorporateService(IMemoryCache memoryCache)
         {
             _corporates = new List<Corporate>();
+            _memoryCache = memoryCache;
         }
 
         public async Task AddCustomer(Customer customer)
@@ -41,10 +44,15 @@ namespace CustomerApp.Services
             return _corporates;
         }
 
-        public async Task<Customer> GetCustomerById(long id)
+        public async ValueTask<Customer> GetCustomerById(long id)
         {
+            if (_memoryCache.TryGetValue(id, out Customer cachedCustomer))
+            {
+                return cachedCustomer;
+            }
             var corporate = _corporates.FirstOrDefault(c => c.CustomerId == id);
             await Task.Delay(1000);
+            _memoryCache.Set(id, corporate, TimeSpan.FromMinutes(5));
             return corporate;
         }
 
