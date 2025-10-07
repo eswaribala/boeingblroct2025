@@ -24,6 +24,8 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddAutoMapper(cfg =>
 cfg.AddProfile<UserProfile>()
 );
+builder.Services.AddAutoMapper(cfg =>cfg.AddProfile<RoleProfile>()
+);
 
 // Add services to the container.
 
