@@ -14,7 +14,6 @@ namespace UserAPI.Models
         [Required]
         [Column("LastName", TypeName = "varchar(25)")]
         [RegularExpression("^[a-zA-Z]{5,25}$", ErrorMessage = "Last name must contain only alphabetic characters.")]
-
         public string LastName { get; set; }
     }
 }
