@@ -22,24 +22,45 @@ namespace UserAPI.Services
             return result.Entity;
         }
 
-        public Task<bool> DeleteRole(long RoleId)
+        public async Task<bool> DeleteRole(long RoleId)
         {
-            throw new NotImplementedException();
+            var role = await _userContext.Roles.FirstOrDefaultAsync(r => r.RoleId == RoleId);
+            if (role != null)
+            {
+                _userContext.Roles.Remove(role);
+               await _userContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
-        public Task<List<Role>> GetAllRoles()
+        public async Task<List<Role>> GetAllRoles()
         {
-            throw new NotImplementedException();
+           return await _userContext.Roles.ToListAsync();
         }
 
-        public Task<Role> GetRoleById(long RoleId)
+        public async Task<Role> GetRoleById(long RoleId)
         {
-            throw new NotImplementedException();
+            var role =  await _userContext.Roles.FirstOrDefaultAsync(r => r.RoleId == RoleId);
+            if (role != null)
+            {
+                return role;
+            }
+            return null;
         }
 
-        public Task<Role> UpdateRole(Role updatedRole)
+        public async Task<Role> UpdateRole(Role updatedRole, long UserId)
         {
-            throw new NotImplementedException();
+            var user = await _userContext.Users.FirstAsync(u => u.UserId == UserId);
+            updatedRole.User = user;
+            var role = await _userContext.Roles.FirstOrDefaultAsync(r => r.RoleId == updatedRole.RoleId);
+            if (role != null)
+            {
+                _userContext.Entry(role).CurrentValues.SetValues(updatedRole);
+                await _userContext.SaveChangesAsync();
+                return updatedRole;
+            }
+            return null;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace UserAPI.Models
     {
         [Key]
         [Column("UserId")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long UserId { get; set; }
         public FullName Name { get; set; }
         [Required]

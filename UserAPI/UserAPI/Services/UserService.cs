@@ -20,16 +20,16 @@ namespace UserAPI.Services
 
         }
 
-        public Task<bool> DeleteUser(long id)
+        public async Task<bool> DeleteUser(long id)
         {
-            var user = _userContext.Users.FirstOrDefaultAsync(u => u.UserId == id);
+            var user = await _userContext.Users.FirstOrDefaultAsync(u => u.UserId == id);
             if (user != null)
             {
-                _userContext.Users.Remove(user.Result);
-                _userContext.SaveChangesAsync();
-                return Task.FromResult(true);
+                _userContext.Users.Remove(user);
+                await _userContext.SaveChangesAsync();
+                return true;
             }
-            return Task.FromResult(false);
+            return false;
         }
 
         public async Task<List<BoeingUser>> GetAllUsers()
