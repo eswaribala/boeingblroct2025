@@ -1,0 +1,54 @@
+🔹 Step 1: Install dotnet-ef as a global tool
+
+Open PowerShell (not CMD) and run:
+
+dotnet tool install --global dotnet-ef
+
+
+If you already installed it before, update instead:
+
+dotnet tool update --global dotnet-ef
+
+🔹 Step 2: Add the global tools folder to your PATH
+
+On Windows, global tools are placed in:
+
+%USERPROFILE%\.dotnet\tools
+
+
+So you need that in your PATH.
+
+Run this in PowerShell:
+
+setx PATH "$($env:PATH);$env:USERPROFILE\.dotnet\tools"
+
+
+Then close your terminal completely and open a new PowerShell window.
+
+🔹 Step 3: Verify
+
+Now try:
+
+dotnet ef --version
+
+
+You should see the EF Core CLI version (should match your EF Core NuGet package, e.g., 9.x).
+
+
+🔹 Step 4: (If still doesn’t work) Use a local tool instead
+
+In your project root (StoreApi solution folder):
+
+dotnet new tool-manifest
+dotnet tool install dotnet-ef
+dotnet tool run dotnet-ef --version
+
+
+dotnet tool install --global dotnet-ef
+dotnet tool update --global dotnet-ef
+dotnet add package Microsoft.EntityFrameworkCore.Design
+dotnet ef
+dotnet ef migrations add MyFirstMigration
+dotnet ef database update
+dotnet ef migrations add IdentityMigration --context CatalogIdentityContext
+dotnet ef database update --context CatalogIdentityContext
