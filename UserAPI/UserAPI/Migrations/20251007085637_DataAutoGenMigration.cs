@@ -5,7 +5,7 @@
 namespace UserAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class MyFirstMigration : Migration
+    public partial class DataAutoGenMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

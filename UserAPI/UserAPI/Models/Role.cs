@@ -8,6 +8,7 @@ namespace UserAPI.Models
     {
         [Key]
         [Column("RoleId")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long RoleId { get; set; }
         [Required]
         [Column("RoleName", TypeName = "varchar(20)")]

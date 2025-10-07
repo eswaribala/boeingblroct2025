@@ -11,8 +11,8 @@ using UserAPI.Contexts;
 namespace UserAPI.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20251007072924_MyFirstMigration")]
-    partial class MyFirstMigration
+    [Migration("20251007085637_DataAutoGenMigration")]
+    partial class DataAutoGenMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
