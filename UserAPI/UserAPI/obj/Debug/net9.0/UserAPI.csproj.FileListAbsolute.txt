@@ -25,7 +25,6 @@ E:\boeingoct2025ws\UserAPI\UserAPI\obj\Debug\net9.0\staticwebassets.build.json
 E:\boeingoct2025ws\UserAPI\UserAPI\obj\Debug\net9.0\staticwebassets.build.json.cache
 E:\boeingoct2025ws\UserAPI\UserAPI\obj\Debug\net9.0\staticwebassets.development.json
 E:\boeingoct2025ws\UserAPI\UserAPI\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-E:\boeingoct2025ws\UserAPI\UserAPI\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 E:\boeingoct2025ws\UserAPI\UserAPI\obj\Debug\net9.0\UserAPI.csproj.Up2Date
 E:\boeingoct2025ws\UserAPI\UserAPI\obj\Debug\net9.0\UserAPI.dll
 E:\boeingoct2025ws\UserAPI\UserAPI\obj\Debug\net9.0\refint\UserAPI.dll
