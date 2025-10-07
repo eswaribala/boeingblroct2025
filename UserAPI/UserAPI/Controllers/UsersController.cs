@@ -3,12 +3,16 @@ using UserAPI.Services;
 using AutoMapper;
 using UserAPI.DTOS;
 using UserAPI.Models;
+using Asp.Versioning;
+using Microsoft.AspNetCore.Cors;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace UserAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [EnableCors]
     [ApiController]
     public class UsersController : ControllerBase
     {
