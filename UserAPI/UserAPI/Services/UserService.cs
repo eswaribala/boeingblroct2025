@@ -49,14 +49,14 @@ namespace UserAPI.Services
 
         public async Task<BoeingUser> UpdateUser(BoeingUser updatedUser)
         {
-            var user = _userContext.Users.FirstOrDefaultAsync(u => u.UserId == updatedUser.UserId);
-            if (user != null)
-            {
-                _userContext.Entry(user).CurrentValues.SetValues(updatedUser);
-                await _userContext.SaveChangesAsync();
-                return updatedUser;
-            }
-            return null;
+            var user = await _userContext.Users
+       .SingleOrDefaultAsync(u => u.UserId == updatedUser.UserId);   // <-- await
+
+            if (user is null) return null;
+
+            _userContext.Entry(user).CurrentValues.SetValues(updatedUser);
+            await _userContext.SaveChangesAsync();
+            return user; // or return updatedUser, your choice
         }
     }
 }

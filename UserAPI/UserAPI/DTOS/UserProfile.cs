@@ -7,9 +7,11 @@ namespace UserAPI.DTOS
     {
         public UserProfile() {
             // Entity -> DTO
+            CreateMap<FullName, FullNameDTO>();
             CreateMap<BoeingUser, BoeingUserReadDTO>();
 
             // DTO -> Entity
+            CreateMap<FullNameDTO, FullName>();
             CreateMap<BoeingUserDTO,BoeingUser>();
         }
        

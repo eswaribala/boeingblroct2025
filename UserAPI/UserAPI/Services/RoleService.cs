@@ -13,9 +13,9 @@ namespace UserAPI.Services
             _userContext = userContext;
         }
 
-        public async Task<Role> AddRole(Role newRole, long UserId)
+        public async Task<Role> AddRole(Role newRole)
         {
-            var user = await _userContext.Users.FirstAsync(u => u.UserId == UserId);
+            var user = await _userContext.Users.FirstAsync(u => u.UserId == newRole.UserId);
             newRole.User = user;
             var result = await _userContext.Roles.AddAsync(newRole);
             await _userContext.SaveChangesAsync();
@@ -49,9 +49,9 @@ namespace UserAPI.Services
             return null;
         }
 
-        public async Task<Role> UpdateRole(Role updatedRole, long UserId)
+        public async Task<Role> UpdateRole(Role updatedRole)
         {
-            var user = await _userContext.Users.FirstAsync(u => u.UserId == UserId);
+            var user = await _userContext.Users.FirstAsync(u => u.UserId == updatedRole.UserId);
             updatedRole.User = user;
             var role = await _userContext.Roles.FirstOrDefaultAsync(r => r.RoleId == updatedRole.RoleId);
             if (role != null)

@@ -28,12 +28,10 @@ namespace UserAPI.Controllers
 
         // GET: api/<UsersController>
         [HttpGet]
-        public Task<IEnumerable<IActionResult>> Get()
+        public async Task<ActionResult<IEnumerable<BoeingUserReadDTO>>> Get()
         {
-            var users =  _userService.GetAllUsers();
-            var userReadDTOs = _mapper.Map<IEnumerable<BoeingUserReadDTO>>(users);
-            return Task.FromResult(userReadDTOs.Select(dto => (IActionResult)Ok(dto)));
-
+            var users = await _userService.GetAllUsers();
+            return Ok(_mapper.Map<IEnumerable<BoeingUserReadDTO>>(users));
         }
 
         // GET api/<UsersController>/5
@@ -41,7 +39,7 @@ namespace UserAPI.Controllers
         public async Task<IActionResult> Get(long id)
         {
            var user = await  _userService.GetUserById(id);
-           return Ok(user);
+           return Ok(_mapper.Map<BoeingUserReadDTO>(user));
         }
 
         // POST api/<UsersController>
@@ -56,13 +54,14 @@ namespace UserAPI.Controllers
         }
 
         // PUT api/<UsersController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] BoeingUserDTO boeingUserDTO )
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] BoeingUserDTO boeingUserDTO )
         {
             var boeingUser = _mapper.Map<BoeingUser>(boeingUserDTO);
-            boeingUser.UserId = id;
+       
             var updatedUser =  await _userService.UpdateUser(boeingUser);
-            return Ok(updatedUser);
+            var boeingUserUpdatedDTO = _mapper.Map<BoeingUserReadDTO>(updatedUser);
+            return Ok(boeingUserUpdatedDTO);
         }
 
         // DELETE api/<UsersController>/5
