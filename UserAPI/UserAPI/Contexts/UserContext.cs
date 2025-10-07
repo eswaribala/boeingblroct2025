@@ -8,6 +8,7 @@ namespace UserAPI.Contexts
     {
         public UserContext(DbContextOptions<UserContext> options):base(options)
         {
+            Database.EnsureCreated();
         }
         public DbSet<BoeingUser> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
