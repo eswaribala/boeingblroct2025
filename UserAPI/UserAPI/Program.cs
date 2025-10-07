@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UserAPI.Contexts;
+using UserAPI.DTOS;
 using UserAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,11 @@ builder.Services.AddDbContext<UserContext>(options =>
 //DI for services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+
+//Automapper registration
+builder.Services.AddAutoMapper(cfg =>
+cfg.AddProfile<UserProfile>()
+);
 
 // Add services to the container.
 

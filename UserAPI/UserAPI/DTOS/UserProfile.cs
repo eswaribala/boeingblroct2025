@@ -5,10 +5,13 @@ namespace UserAPI.DTOS
 {
     public class UserProfile:Profile
     {
-        // Entity -> DTO
-        CreateMap<BoeingUser, BoeingUserReadDTO>();
+        public UserProfile() {
+            // Entity -> DTO
+            CreateMap<BoeingUser, BoeingUserReadDTO>();
 
             // DTO -> Entity
-        CreateMap<VehicleDTO, Vehicle>();
+            CreateMap<BoeingUserDTO,BoeingUser>();
+        }
+       
     }
 }
