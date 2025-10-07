@@ -16,6 +16,7 @@ namespace UserAPI.Models
 
         // Foreign key to BoeingUser
         [ForeignKey("BoeingUser")]
+        [Column("UserIdFK")]
         public long UserId { get; set; }
         public BoeingUser User { get; set; }
 
