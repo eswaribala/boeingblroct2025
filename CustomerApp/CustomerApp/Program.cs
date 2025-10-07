@@ -57,6 +57,7 @@ var host=Host.CreateDefaultBuilder(args)
         //register controller
         services.AddTransient<CustomerController>();
         //services.AddSingleton<ICustomerService, CorporateService>();
+        services.AddMemoryCache();
     })
     .Build();
 // Resolve and run
