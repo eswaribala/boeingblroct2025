@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UserAPI.Contexts;
+using UserAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,10 @@ builder.Services.AddDbContext<UserContext>(options =>
         maxRetryDelay: TimeSpan.FromSeconds(30),
         errorNumbersToAdd: null)
     ));
+
+//DI for services
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 // Add services to the container.
 
