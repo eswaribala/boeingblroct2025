@@ -53,14 +53,24 @@ namespace UserAPI.Controllers
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] )
+        public async Task<IActionResult> Put(int id, [FromBody] BoeingUserDTO boeingUserDTO )
         {
+            var boeingUser = _mapper.Map<BoeingUser>(boeingUserDTO);
+            boeingUser.UserId = id;
+            var updatedUser =  await _userService.UpdateUser(boeingUser);
+            return Ok(updatedUser);
         }
 
         // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var result = await _userService.DeleteUser(id);
+            if (result)
+            {
+                return Ok();
+            }
+            return NotFound();
         }
     }
 }
