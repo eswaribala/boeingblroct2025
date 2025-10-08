@@ -4,6 +4,7 @@ using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PolicyHolderFunction.Data;
 
 //var builder = FunctionsApplication.CreateBuilder(args);
 
@@ -33,7 +34,7 @@ var host = new HostBuilder()
         services.AddSingleton(sp =>
             sp.GetRequiredService<CosmosClient>().GetContainer(database, container));
 
-        //services.AddSingleton<IClaimRepository, ClaimRepository>();
+        services.AddScoped<IPolicyHolderRepository, PolicyHolderRepository>();
     })
     .ConfigureFunctionsWebApplication()
     .Build();
