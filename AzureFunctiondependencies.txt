@@ -1,0 +1,17 @@
+1) Create the project (VS 2022)
+1.	File → New → Project
+o	Template: Azure Functions
+o	Name: ClaimsFunctions
+o	.NET: .NET 8 (LTS)
+o	Worker: Isolated
+o	Trigger: HTTP trigger (we’ll add others)
+2.	Right-click solution → Manage NuGet Packages → Install:
+o	Microsoft.Azure.Functions.Worker
+o	Microsoft.Azure.Functions.Worker.Sdk (already in SDK, confirm)
+o	Microsoft.Azure.Functions.Worker.Extensions.Http
+o	Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues
+o	Microsoft.Azure.Functions.Worker.Extensions.Storage.Blobs
+o	Microsoft.Azure.Functions.Worker.Extensions.CosmosDB
+o	Microsoft.Azure.Cosmos
+o	Azure.Identity (for Managed Identity later)
+o	Microsoft.Extensions.Options.ConfigurationExtensions
