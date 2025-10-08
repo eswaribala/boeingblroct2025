@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-var builder = FunctionsApplication.CreateBuilder(args);
+//var builder = FunctionsApplication.CreateBuilder(args);
 
 
 var host = new HostBuilder()
@@ -35,15 +35,8 @@ var host = new HostBuilder()
 
         //services.AddSingleton<IClaimRepository, ClaimRepository>();
     })
-    .ConfigureFunctionsWorkerDefaults()
+    .ConfigureFunctionsWebApplication()
     .Build();
 
 await host.RunAsync();
 
-builder.ConfigureFunctionsWebApplication();
-
-builder.Services
-    .AddApplicationInsightsTelemetryWorkerService()
-    .ConfigureFunctionsApplicationInsights();
-
-builder.Build().Run();
