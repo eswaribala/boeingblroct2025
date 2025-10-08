@@ -12,7 +12,7 @@ namespace PolicyHolderFunction.Data
         Task<PolicyHolder> AddPolicyHolderAsync(PolicyHolder policyHolder, CancellationToken ct=default);
         Task<PolicyHolder> GetPolicyHolderAsync(string policyNo, CancellationToken ct = default);
         Task<IReadOnlyList<PolicyHolder>> ListOpenAsync(int max = 50, CancellationToken ct = default);
-        Task<bool> UpdatePolicyHolderAsync(PolicyHolder policyHolder, CancellationToken ct = default);
+        Task<PolicyHolder> UpdatePolicyHolderAsync(PolicyHolder policyHolder, CancellationToken ct = default);
         Task<bool> DeletePolicyHolderAsync(string policyNo, CancellationToken ct = default);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Cosmos;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using PolicyHolderFunction.Models;
 using System.Net;
@@ -23,9 +24,18 @@ namespace PolicyHolderFunction.Data
         }
 
 
-        public Task<bool> DeletePolicyHolderAsync(string policyNo)
+        public async Task<bool> DeletePolicyHolderAsync(string policyNo)
         {
-            throw new NotImplementedException();
+            try
+            {
+
+                await _container.DeleteItemAsync<PolicyHolder>(policyNo, new PartitionKey(policyNo));
+                return true;
+             }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return false;
+            }
         }
 
         public Task<bool> DeletePolicyHolderAsync(string policyNo, CancellationToken ct = default)
@@ -66,14 +76,16 @@ namespace PolicyHolderFunction.Data
 
         }
 
-        public Task<bool> UpdatePolicyHolderAsync(PolicyHolder policyHolder)
+        public async Task<PolicyHolder> UpdatePolicyHolderAsync(PolicyHolder policyHolder, CancellationToken ct=default)
         {
-            throw new NotImplementedException();
+            // Read → apply mutation → Replace
+            var existing = await GetPolicyHolderAsync(policyHolder.PolicyNo, ct);
+            if (existing is null) return null;
+            
+            var resp = await _container.ReplaceItemAsync(existing, existing.PolicyNo, new PartitionKey(existing.PolicyNo), cancellationToken: ct);
+            return resp.Resource;
+
         }
 
-        public Task<bool> UpdatePolicyHolderAsync(PolicyHolder policyHolder, CancellationToken ct = default)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
