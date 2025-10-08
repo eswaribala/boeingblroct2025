@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using UserAPI;
 using UserAPI.Contexts;
 using UserAPI.DTOS;
+using UserAPI.Middleware;
 using UserAPI.Services;
 
 
@@ -86,7 +87,8 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = string.Empty; // still serves UI at root });
     });
 }
-    app.UseHttpsRedirection();
+app.UseLoggingMiddleware(); //custom middleware
+app.UseHttpsRedirection();
 app.UseCors(policyName);
 
 
