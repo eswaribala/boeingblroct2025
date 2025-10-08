@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using PolicyHolderFunction.Models;
 namespace PolicyHolderFunction.Data
 {
     public interface IPolicyHolderRepository
     {
-        Task<bool> AddPolicyHolderAsync(Models.PolicyHolder policyHolder);
-        Task<Models.PolicyHolder> GetPolicyHolderAsync(string policyNo);
-        Task<IEnumerable<Models.PolicyHolder>> GetAllPolicyHoldersAsync();
-        Task<bool> UpdatePolicyHolderAsync(Models.PolicyHolder policyHolder);
+        Task<PolicyHolder> AddPolicyHolderAsync(PolicyHolder policyHolder);
+        Task<PolicyHolder> GetPolicyHolderAsync(string policyNo);
+        Task<IEnumerable<PolicyHolder>> GetAllPolicyHoldersAsync();
+        Task<bool> UpdatePolicyHolderAsync(PolicyHolder policyHolder);
         Task<bool> DeletePolicyHolderAsync(string policyNo);
     }
 }
