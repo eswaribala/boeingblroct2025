@@ -1,0 +1,23 @@
+services:
+  sqlserveruserservice:  
+    image: mcr.microsoft.com/mssql/server 
+    hostname: 'sqlservervehicleservice'  
+    environment:  
+      ACCEPT_EULA: 'Y' 
+      SA_PASSWORD: "Vignesh@95!"  
+    volumes:  
+      - ./userapi:/var/opt/mssql/data  
+    ports:  
+      - '1403:1433'  
+    expose:  
+      - 1433  
+  userapi:
+    image: ${DOCKER_REGISTRY-}userapi
+    build:
+      context: .
+      dockerfile: UserAPI/Dockerfile
+    depends_on:
+      - sqlserveruserservice
+networks:
+  boeingnetwork:
+    external: true  

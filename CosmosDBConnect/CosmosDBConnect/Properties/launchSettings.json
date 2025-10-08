@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CosmosDBConnect": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
