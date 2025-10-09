@@ -1,0 +1,21 @@
+2. Crontab Commands
+
+export EDITOR=vi ;to specify a editor to open crontab file.
+
+crontab -e    Edit your crontab file, or create one if it doesn’t already exist.
+crontab -l      Display your crontab file.
+crontab -r      Remove your crontab file.
+crontab -v      Display the last time you edited your crontab file. (This option is only available on a few systems.)
+
+3. Crontab file
+Crontab syntax :
+A crontab file has five fields for specifying day , date and time followed by the command to be run at that interval.
+
+*     *     *   *    *        command to be executed
+-     -     -   -    -
+|     |     |   |    |
+|     |     |   |    +----- day of week (0 - 6) (Sunday=0)
+|     |     |   +------- month (1 - 12)
+|     |     +--------- day of        month (1 - 31)
+|     +----------- hour (0 - 23)
++------------- min (0 - 59)
