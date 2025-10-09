@@ -1,3 +1,4 @@
+using Azure.Storage.Queues;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
@@ -34,6 +35,9 @@ var host = new HostBuilder()
             }
         });
         services.AddSingleton(client);
+        var conn = ctx.Configuration["AzureWebJobsStorage"];
+        services.AddSingleton(new QueueClient(conn, "policyholderqueue",
+            new QueueClientOptions { MessageEncoding = QueueMessageEncoding.Base64 }));
 
         // 2) Container singleton (sync) — safe to register even if not created yet
         services.AddSingleton(sp =>

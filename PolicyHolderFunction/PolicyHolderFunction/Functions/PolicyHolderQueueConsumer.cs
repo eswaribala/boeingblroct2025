@@ -17,6 +17,7 @@ namespace PolicyHolderFunction.Functions
         {
             _logger = logger;
         }
+        
         [Function("ProcessPolicyQueue")]
         public void Run(
           [QueueTrigger("policyholderqueue", Connection = "AzureWebJobsStorage")] string queueMessage)
@@ -36,6 +37,7 @@ namespace PolicyHolderFunction.Functions
                 _logger.LogError(ex, "Error while processing message.");
             }
         }
+        
 
 
     }
