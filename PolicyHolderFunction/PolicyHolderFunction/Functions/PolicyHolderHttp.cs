@@ -47,7 +47,7 @@ namespace PolicyHolderFunction.Functions
                 policyHolder.Id = Guid.NewGuid().ToString("N");
 
             // Debug: confirm what goes to Cosmos
-            //_log.LogInformation("Outgoing Cosmos doc: {json}", Newtonsoft.Json.JsonConvert.SerializeObject(doc));
+            _logger.LogInformation("Outgoing Cosmos doc: {json}", Newtonsoft.Json.JsonConvert.SerializeObject(policyHolder));
 
             // PK is /id -> pass doc.Id
            
@@ -66,11 +66,11 @@ namespace PolicyHolderFunction.Functions
         public async Task<HttpResponseData> Get(
     [HttpTrigger(AuthorizationLevel.Function, "get", Route = "policyholders/{id}")] HttpRequestData req, string id)
         {
-            var claim = await repo.GetPolicyHolderAsync(id);
-            if (claim is null) return req.CreateResponse(HttpStatusCode.NotFound);
+            var policyHolderInstance = await repo.GetPolicyHolderAsync(id);
+            if (policyHolderInstance is null) return req.CreateResponse(HttpStatusCode.NotFound);
 
             var res = req.CreateResponse(HttpStatusCode.OK);
-            await res.WriteAsJsonAsync(claim);
+            await res.WriteAsJsonAsync(policyHolderInstance);
             return res;
         }
 
