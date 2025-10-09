@@ -19,12 +19,32 @@ namespace PolicyHolderFunction.Data
 
         public async Task<PolicyHolder> AddPolicyHolderAsync(PolicyHolder policyHolder, CancellationToken ct=default)
         {
-            var resp = await _container.CreateItemAsync(policyHolder, new PartitionKey(policyHolder.PolicyNo), cancellationToken: ct);
-            return resp.Resource;
-        }
+            try
+            {
+                var resp = await _container.CreateItemAsync(policyHolder, new PartitionKey(policyHolder.Id), cancellationToken: ct);
+                return resp.Resource;
+            }
+            catch (Microsoft.Azure.Cosmos.CosmosException ex)
+            {
+                // Copy to locals so the debugger isn’t calling the getter repeatedly
+                string msg = ex.Message;                  // safe at runtime
+                string aid = ex.ActivityId;
+                int code = (int)ex.StatusCode;
+                int sub = ex.SubStatusCode;
+                string diag = ex.Diagnostics?.ToString();
+
+                Console.Error.WriteLine($"Cosmos error {code}/{sub} ActivityId={aid}");
+                Console.Error.WriteLine(msg);
+                Console.Error.WriteLine(diag);
+
+                // Put a breakpoint on the next line and inspect the locals 'msg', 'aid', etc.
+                throw;
+            }
+            
+            }
 
 
-        public async Task<bool> DeletePolicyHolderAsync(string policyNo)
+        public async Task<bool> DeletePolicyHolderAsync(string policyNo, CancellationToken ct = default)
         {
             try
             {
@@ -38,16 +58,13 @@ namespace PolicyHolderFunction.Data
             }
         }
 
-        public Task<bool> DeletePolicyHolderAsync(string policyNo, CancellationToken ct = default)
-        {
-            throw new NotImplementedException();
-        }
+        
 
-        public async Task<PolicyHolder> GetPolicyHolderAsync(string policyNo,CancellationToken ct=default)
+        public async Task<PolicyHolder> GetPolicyHolderAsync(string id,CancellationToken ct=default)
         {
             try
             {
-                var resp = await _container.ReadItemAsync<PolicyHolder>(policyNo, new PartitionKey(policyNo), cancellationToken: ct);
+                var resp = await _container.ReadItemAsync<PolicyHolder>(id, new PartitionKey(id), cancellationToken: ct);
                 return resp.Resource;
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
@@ -57,19 +74,27 @@ namespace PolicyHolderFunction.Data
 
         }
 
-        public async Task<IReadOnlyList<PolicyHolder>> ListOpenAsync(int max = 50, CancellationToken ct = default)
+        public async Task<IReadOnlyList<PolicyHolder>> ListOpenAsync(int max = 1, CancellationToken ct = default)
         {
-            var queryable =
-    _container.GetItemLinqQueryable<PolicyHolder>(allowSynchronousQueryExecution: false)
-             
-              .OrderByDescending(p => p.StartDate)
-              .Take(max);
+            // If you have a "Status" flag for "open", filter here; otherwise remove the Where.
+            var query = _container
+                .GetItemLinqQueryable<PolicyHolder>(
+                    allowSynchronousQueryExecution: false,
+                    requestOptions: new QueryRequestOptions
+                    {
+                        // Cross-partition queries are automatic in v3.
+                        // If you want to constrain to a partition, set PartitionKey = new PartitionKey(<value>)
+                        MaxItemCount = max
+                    })
+                //.Where(p => p.Status == "Open")        // optional business filter
+               // .OrderByDescending(p => p.StartDate)     // Make sure StartDate is indexed & consistent type
+                .Take(max)
+                .ToFeedIterator();                       // requires Microsoft.Azure.Cosmos.Linq
 
-            var it = queryable.ToFeedIterator(); // IMMEDIATE when iterated
-            var results = new List<PolicyHolder>();
-            while (it.HasMoreResults && results.Count < max)
+            var results = new List<PolicyHolder>(Math.Min(max, 50));
+            while (query.HasMoreResults && results.Count < max)
             {
-                var page = await it.ReadNextAsync(ct);
+                var page = await query.ReadNextAsync(ct);
                 results.AddRange(page);
             }
             return results;
@@ -79,10 +104,18 @@ namespace PolicyHolderFunction.Data
         public async Task<PolicyHolder> UpdatePolicyHolderAsync(PolicyHolder policyHolder, CancellationToken ct=default)
         {
             // Read → apply mutation → Replace
-            var existing = await GetPolicyHolderAsync(policyHolder.PolicyNo, ct);
+            var existing = await GetPolicyHolderAsync(policyHolder.Id, ct);
             if (existing is null) return null;
+            existing.PolicyNo=policyHolder.PolicyNo;
+            existing.StartDate=policyHolder.StartDate;
+            existing.EndDate=policyHolder.EndDate;
+            existing.Address=policyHolder.Address;
+            existing.Email=policyHolder.Email;
+            existing.FirstName=policyHolder.FirstName;
+            existing.LastName=policyHolder.LastName;
             
-            var resp = await _container.ReplaceItemAsync(existing, existing.PolicyNo, new PartitionKey(existing.PolicyNo), cancellationToken: ct);
+
+            var resp = await _container.ReplaceItemAsync(existing, existing.Id, new PartitionKey(existing.Id), cancellationToken: ct);
             return resp.Resource;
 
         }
