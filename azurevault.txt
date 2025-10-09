@@ -1,0 +1,6 @@
+1) Put secrets in Key Vault
+Create these secrets (suggested names map nicely to config sections):
+Cosmos--AccountEndpoint → https://<your-account>.documents.azure.com:443/
+Cosmos--Key → <PRIMARY_OR_READWRITE_KEY>
+Cosmos--Database → YourDb
+Cosmos--Container → YourContainer
