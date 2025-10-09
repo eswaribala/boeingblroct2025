@@ -1,0 +1,1 @@
+az storage account show-connection-string -g <rg> -n <storagename>  --query connectionString -o tsv
