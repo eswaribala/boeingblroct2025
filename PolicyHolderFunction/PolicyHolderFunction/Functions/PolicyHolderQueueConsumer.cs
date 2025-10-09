@@ -19,7 +19,7 @@ namespace PolicyHolderFunction.Functions
         }
         [Function("ProcessPolicyQueue")]
         public void Run(
-          [QueueTrigger("policyholderqueue", Connection = "insurancestorage2025")] string queueMessage)
+          [QueueTrigger("policyholderqueue", Connection = "AzureWebJobsStorage")] string queueMessage)
         {
             _logger.LogInformation("Queue message received at: {time}", DateTime.UtcNow);
             _logger.LogInformation("Raw message: {msg}", queueMessage);
