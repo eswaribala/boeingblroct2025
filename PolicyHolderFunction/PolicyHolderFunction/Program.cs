@@ -1,7 +1,8 @@
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Queues;
 using Microsoft.Azure.Cosmos;
-using Azure.Security.KeyVault.Secrets;
-
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,15 @@ var host = new HostBuilder()
     {
         cfg.AddJsonFile("local.settings.json", optional: true)
            .AddEnvironmentVariables();
+        var built = cfg.Build();
+        var kvUri = built["KEYVAULT_URI"];
+        if (!string.IsNullOrWhiteSpace(kvUri))
+        {
+            var cred = new DefaultAzureCredential();
+            var sc = new SecretClient(new Uri(kvUri), cred);
+            // Load Key Vault secrets as configuration keys (Cosmos--X -> Cosmos:X)
+            cfg.AddAzureKeyVault(sc, new KeyVaultSecretManager());
+        }
     })
     .ConfigureServices((ctx, services) =>
     {
