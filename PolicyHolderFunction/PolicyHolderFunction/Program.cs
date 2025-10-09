@@ -1,5 +1,7 @@
 using Azure.Storage.Queues;
 using Microsoft.Azure.Cosmos;
+using Azure.Security.KeyVault.Secrets;
+
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.Configuration;
@@ -19,21 +21,40 @@ var host = new HostBuilder()
     })
     .ConfigureServices((ctx, services) =>
     {
-        var c = ctx.Configuration.GetSection("Cosmos");
-        var endpoint  = c["AccountEndpoint"]!;
-        var key       = c["Key"]!;
-        var database  = c["Database"]!;
-        var container = c["Container"]!;
+        //var c = ctx.Configuration.GetSection("Cosmos");
+        //var endpoint  = c["AccountEndpoint"]!;
+        //var key       = c["Key"]!;
+        //var database  = c["Database"]!;
+        //var container = c["Container"]!;
+        var cosmosOpts = new CosmosOptions();
+        ctx.Configuration.GetSection("Cosmos").Bind(cosmosOpts);
 
-        // 1) CosmosClient singleton
-        var client = new CosmosClient(endpoint, key, new CosmosClientOptions
+        // Validate early (helpful in cold start)
+        if (string.IsNullOrWhiteSpace(cosmosOpts.AccountEndpoint) ||
+            string.IsNullOrWhiteSpace(cosmosOpts.Key) ||
+            string.IsNullOrWhiteSpace(cosmosOpts.Database) ||
+            string.IsNullOrWhiteSpace(cosmosOpts.Container))
         {
-            ConnectionMode = ConnectionMode.Gateway,
-            SerializerOptions = new CosmosSerializationOptions
+            throw new InvalidOperationException("Cosmos configuration is incomplete. Ensure Key Vault secrets exist and access is granted.");
+        }
+
+        // CosmosClient singleton
+        var client = new CosmosClient(
+            cosmosOpts.AccountEndpoint,
+            cosmosOpts.Key,
+            new CosmosClientOptions
             {
-                PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-            }
-        });
+                ConnectionMode = ConnectionMode.Gateway,
+                SerializerOptions = new CosmosSerializationOptions
+                {
+                    PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                }
+
+            } // or Direct
+
+
+            );
+       
         services.AddSingleton(client);
         var conn = ctx.Configuration["AzureWebJobsStorage"];
         services.AddSingleton(new QueueClient(conn, "policyholderqueue",
@@ -41,7 +62,7 @@ var host = new HostBuilder()
 
         // 2) Container singleton (sync) — safe to register even if not created yet
         services.AddSingleton(sp =>
-            sp.GetRequiredService<CosmosClient>().GetContainer(database, container));
+            sp.GetRequiredService<CosmosClient>().GetContainer(cosmosOpts.Database, cosmosOpts.Container));
 
         // app services
         services.AddScoped<IPolicyHolderRepository, PolicyHolderRepository>();
@@ -55,16 +76,26 @@ var host = new HostBuilder()
 using (var scope = host.Services.CreateScope())
 {
     var cfg = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-    var c = cfg.GetSection("Cosmos");
-    var database  = c["Database"]!;
-    var container = c["Container"]!;
+    //var c = cfg.GetSection("Cosmos");
+    //var database  = c["Database"]!;
+    //var container = c["Container"]!;
+    var cosmosOpts = new CosmosOptions();
+    cfg.Bind(cosmosOpts);
 
+    // Validate early (helpful in cold start)
+    if (string.IsNullOrWhiteSpace(cosmosOpts.AccountEndpoint) ||
+        string.IsNullOrWhiteSpace(cosmosOpts.Key) ||
+        string.IsNullOrWhiteSpace(cosmosOpts.Database) ||
+        string.IsNullOrWhiteSpace(cosmosOpts.Container))
+    {
+        throw new InvalidOperationException("Cosmos configuration is incomplete. Ensure Key Vault secrets exist and access is granted.");
+    }
     var cosmos = scope.ServiceProvider.GetRequiredService<CosmosClient>();
-    var dbResp = await cosmos.CreateDatabaseIfNotExistsAsync(database);
+    var dbResp = await cosmos.CreateDatabaseIfNotExistsAsync(cosmosOpts.Database);
     var db     = dbResp.Database;
 
     // Adjust partition key path to your model if needed
-    await db.CreateContainerIfNotExistsAsync(container, "/id");
+    await db.CreateContainerIfNotExistsAsync(cosmosOpts.Container, "/id");
 }
 
 await host.RunAsync();
