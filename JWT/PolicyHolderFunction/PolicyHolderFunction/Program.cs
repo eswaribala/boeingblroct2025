@@ -21,22 +21,22 @@ var host = new HostBuilder()
         cfg.AddJsonFile("local.settings.json", optional: true)
            .AddEnvironmentVariables();
         var built = cfg.Build();
-        var kvUri = built["KEYVAULT_URI"];
-        if (!string.IsNullOrWhiteSpace(kvUri))
-        {
-            var cred = new DefaultAzureCredential();
-            var sc = new SecretClient(new Uri(kvUri), cred);
-            // Load Key Vault secrets as configuration keys (Cosmos--X -> Cosmos:X)
-            cfg.AddAzureKeyVault(sc, new KeyVaultSecretManager());
-        }
+        //var kvUri = built["KEYVAULT_URI"];
+        //if (!string.IsNullOrWhiteSpace(kvUri))
+        //{
+        //    var cred = new DefaultAzureCredential();
+        //    var sc = new SecretClient(new Uri(kvUri), cred);
+        //    // Load Key Vault secrets as configuration keys (Cosmos--X -> Cosmos:X)
+        //    cfg.AddAzureKeyVault(sc, new KeyVaultSecretManager());
+        //}
     })
     .ConfigureServices((ctx, services) =>
     {
-        //var c = ctx.Configuration.GetSection("Cosmos");
-        //var endpoint  = c["AccountEndpoint"]!;
-        //var key       = c["Key"]!;
-        //var database  = c["Database"]!;
-        //var container = c["Container"]!;
+        var c = ctx.Configuration.GetSection("Cosmos");
+        var endpoint = c["AccountEndpoint"]!;
+        var key = c["Key"]!;
+        var database = c["Database"]!;
+        var container = c["Container"]!;
         // Bind options from configuration (which now includes Key Vault)
         var cosmosOpts = new CosmosOptions();
         ctx.Configuration.GetSection("Cosmos").Bind(cosmosOpts);
@@ -109,8 +109,8 @@ using (var scope = host.Services.CreateScope())
 {
     var cfg = scope.ServiceProvider.GetRequiredService<IConfiguration>();
     var c = cfg.GetSection("Cosmos");
-    //var database  = c["Database"]!;
-    //var container = c["Container"]!;
+    var database  = c["Database"]!;
+    var container = c["Container"]!;
     var cosmosOpts = new CosmosOptions();
     c.Bind(cosmosOpts);
 
