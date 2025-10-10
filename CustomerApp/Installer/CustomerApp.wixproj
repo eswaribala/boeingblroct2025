@@ -1,0 +1,13 @@
+<Project Sdk="WixToolset.Sdk/4.0.0">
+  <PropertyGroup>
+    <OutputName>CustomerApp</OutputName>
+    <Platform>x64</Platform>
+  </PropertyGroup>
+
+  <!-- Harvest all published files into INSTALLFOLDER in the MSI -->
+  <ItemGroup>
+    <Content Include="..\publish\**\*.*">
+      <PackageDirectory>INSTALLFOLDER</PackageDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

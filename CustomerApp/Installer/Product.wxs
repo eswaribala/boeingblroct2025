@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="CustomerApp"
+           Manufacturer="boeing"
+           Version="1.0.0"
+           UpgradeCode="{1440d1fd-3965-44e2-b8d9-b9894ad5248f}"
+           Language="1033"
+           InstallerVersion="500"
+           Scope="perMachine">
+
+    <!-- Clean major upgrade -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of CustomerApp is already installed." />
+
+    <!-- Install path: Program Files\CustomerApp -->
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="CustomerApp"/>
+    </StandardDirectory>
+
+    <!-- Harvested content from the wixproj goes here -->
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER" />
+
+    <!-- Start Menu -->
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ProgramMenuCustomerApp" Name="CustomerApp"/>
+    </StandardDirectory>
+
+    <Component Id="StartMenuItems" Directory="ProgramMenuCustomerApp">
+      
+
+      <Shortcut Id="CustomerAppShortcut"
+                Name="CustomerApp"
+                Target="[INSTALLFOLDER]CustomerApp.exe"
+                WorkingDirectory="INSTALLFOLDER" />
+      <RemoveFolder Id="RemovePM" On="uninstall"/>
+      <!-- KeyPath to anchor the component -->
+      <RegistryValue Root="HKCU" Key="Software\CustomerApp" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+    </Component>
+
+    <!-- Install everything + shortcuts -->
+    <Feature Id="MainFeature" Title="CustomerApp" Description="Core application" Level="1">
+      <ComponentGroupRef Id="ProductComponents"/>
+      <ComponentRef Id="StartMenuItems"/>
+    </Feature>
+    <Icon Id="AppIcon" SourceFile="..\publish\CustomerApp.exe" />
+<Property Id="ARPPRODUCTICON" Value="AppIcon" />
+    <!-- Add/Remove Programs metadata -->
+   try="DisplayIcon" Value="[INSTALLFOLDER]CustomerApp.exe"/>
+
+  </Package>
+</Wix>

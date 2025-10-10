@@ -1,0 +1,3 @@
+E:\boeingoct2025ws\CustomerApp\publish\CustomerApp.pdb
+E:\boeingoct2025ws\CustomerApp\publish\appsettings.json
+E:\boeingoct2025ws\CustomerApp\publish\CustomerApp.exe

@@ -8,6 +8,11 @@ using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
+
+using OpenTelemetry.Metrics;
 using PolicyHolderFunction.Data;
 using System.ComponentModel;
 
@@ -23,6 +28,11 @@ var host = new HostBuilder()
         var kvUri = built["KEYVAULT_URI"];
         if (!string.IsNullOrWhiteSpace(kvUri))
         {
+            // manually specify tenant, client, and secret
+            //var tenantId = "54c74c76-c4c1-4855-bbed-5ad1189da24f";
+            //var clientId = "cfa8b339-82a2-471a-a3c9-0fc0be7a4093";
+            //var clientSecret = "";
+
             var cred = new DefaultAzureCredential();
             var sc = new SecretClient(new Uri(kvUri), cred);
             // Load Key Vault secrets as configuration keys (Cosmos--X -> Cosmos:X)
@@ -37,8 +47,8 @@ var host = new HostBuilder()
         //var database  = c["Database"]!;
         //var container = c["Container"]!;
         var cosmosOpts = new CosmosOptions();
-        ctx.Configuration.GetSection("Cosmos").Bind(cosmosOpts);
-
+       ctx.Configuration.GetSection("Cosmos").Bind(cosmosOpts);
+       
         // Validate early (helpful in cold start)
         if (string.IsNullOrWhiteSpace(cosmosOpts.AccountEndpoint) ||
             string.IsNullOrWhiteSpace(cosmosOpts.Key) ||
@@ -76,6 +86,24 @@ var host = new HostBuilder()
 
         // app services
         services.AddScoped<IPolicyHolderRepository, PolicyHolderRepository>();
+        // 1) Add AI SDK for worker services
+        services.AddApplicationInsightsTelemetryWorkerService();
+        // 2) Let Functions integrate correlation, logging & dependencies
+        services.ConfigureFunctionsApplicationInsights();
+        services.AddOpenTelemetry()
+            .ConfigureResource(b => b.AddService("PolicyHolderFunctions"))
+            .WithTracing(b => b
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddSource("PolicyHolderActivitySource")   // optional for manual spans
+                )
+            .WithMetrics(b => b
+                
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+              );
+
+
     })
     .ConfigureFunctionsWebApplication()   // for .NET isolated + ASP.NET Core integration
     .Build();
@@ -86,11 +114,11 @@ var host = new HostBuilder()
 using (var scope = host.Services.CreateScope())
 {
     var cfg = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-    //var c = cfg.GetSection("Cosmos");
+    var c = cfg.GetSection("Cosmos");
     //var database  = c["Database"]!;
     //var container = c["Container"]!;
     var cosmosOpts = new CosmosOptions();
-    cfg.Bind(cosmosOpts);
+    c.Bind(cosmosOpts);
 
     // Validate early (helpful in cold start)
     if (string.IsNullOrWhiteSpace(cosmosOpts.AccountEndpoint) ||
