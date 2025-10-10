@@ -67,7 +67,7 @@ kubectl exec -it <podname> -- psql -U postgres
 #quit
 
 #expose the service to load balancer
-kubectl expose deployment --port 7074 customerapi --type=LoadBalancer --name=customerservicev1
+kubectl expose deployment --port 7074 userapi --type=LoadBalancer --name=userservicev1
 or
 kubectl port-forward pod/traderapp-559cd7879-bfpgd 7072:8080
 
