@@ -2,13 +2,20 @@
     "IsEncrypted": false,
     "Values": {
         "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+        //"KEYVAULT_URI": "https://cosmosvault2025.vault.azure.net/",
+        "JWT:Issuer": "http://localhost:7071",
+        "JWT:Audience": "policy-api",
+        "JWT:Secret": "dev-only-super-long-random-secret-at-least-64-bytes",
+        "JWT:DefaultRoles": "Policy.Writer", // optional: comma-separated default roles
+        "JWT:DefaultScopes": "Policy.Create"
     },
     "Cosmos": {
-        "AccountEndpoint": "",
+        "AccountEndpoint": "/",
         "Key": "",
         "Database": "PolicyHolderDb",
         "Container": "PolicyHolders"
     }
+    
 
 }
