@@ -5,3 +5,8 @@ dotnet publish MyApp/MyApp.csproj -c Release -r win-x64 --self-contained true -p
 .NET SDK (8 or 9)WiX 
 v4 SDK (modern, SDK-style)
 dotnet new install WixToolset.Sdk
+
+2) Install the WiX CLI (global .NET tool)
+dotnet tool install --global wix
+# later, to update:
+dotnet tool update --global wix
