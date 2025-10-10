@@ -10,3 +10,13 @@ dotnet new install WixToolset.Sdk
 dotnet tool install --global wix
 # later, to update:
 dotnet tool update --global wix
+
+3)
+Name, Manufacturer, Version.UpgradeCode → generate once and keep it forever for this product line:
+PowerShell: "[guid]::NewGuid()" → paste it in {…}.
+File Source="..\YourApp\publish\YourApp.exe" → match your actual path/name.
+  3. Build the MSI
+From the Installer folder:
+wix build Product.wxs -d PublishDir="..\CustomerApp\publish" -o CustomerApp.msi
+You should get YourApp-1.0.0.msi in the same directory.
+
