@@ -1,0 +1,106 @@
+
+
+#check kinds provided by kubernetes
+kubectl api-resources
+
+#create pv and pvc
+kubctl apply -f postgres-pv.yaml
+
+#postgres deployment
+kubectl apply -f postgres-deployment.yaml
+
+#to check the pod
+kubectl get pods
+#to check the service
+kubectl get svc
+#to check deployment
+kubectl get deploy
+
+#to delete pod
+kubectl delete pod <podname>
+
+Create a read-only user (namespace-scoped) the clean way
+Best practice for “users” in local clusters: use a ServiceAccount (SA) + its token.
+
+Example: read-only access to a namespace team-a.
+
+bash
+Copy
+Edit
+# Namespace
+kubectl create ns team-a
+
+# ServiceAccount (the identity)
+kubectl -n team-a create sa reader
+
+# Bind a read-only role
+kubectl -n team-a create role ro \
+  --verb=get,list,watch \
+  --resource=pods,deployments,services,configmaps,secrets
+
+kubectl -n team-a create rolebinding reader-bind \
+  --role=ro --serviceaccount=team-a:reader
+Get a token for the SA
+K8s v1.24+ uses expiring, bound tokens you request via a Secret or TokenRequest:
+
+bash
+Copy
+Edit
+# (A) Via TokenRequest (recommended, short-lived)
+kubectl -n team-a create token reader
+# prints a JWT token; copy it
+
+# (B) If your cluster still issues secrets for SA tokens:
+kubectl -n team-a get secret | grep reader
+kubectl -n team-a get secret <secret-name> -o jsonpath='{.data.token}' | base64 -d
+
+#to delete svc
+kubectl delete svc <svcname>
+
+#to delete deploy
+kubectl delete deploy <deployname>
+
+#to access postgres pod
+kubectl exec -it <podname> -- psql -U postgres
+#\l
+#create database niitprodcustomerdb;
+#quit
+
+#expose the service to load balancer
+kubectl expose deployment --port 7074 customerapi --type=LoadBalancer --name=customerservicev1
+or
+kubectl port-forward pod/traderapp-559cd7879-bfpgd 7072:8080
+
+#to check authentication
+kubectl auth can-i create pods
+
+Create a read-only user (namespace-scoped) the clean way
+Best practice for “users” in local clusters: use a ServiceAccount (SA) + its token.
+
+Example: read-only access to a namespace team-a.
+
+
+# Namespace
+kubectl create ns team-a
+
+# ServiceAccount (the identity)
+kubectl -n team-a create sa reader
+
+# Bind a read-only role
+kubectl -n team-a create role ro \
+  --verb=get,list,watch \
+  --resource=pods,deployments,services,configmaps,secrets
+
+kubectl -n team-a create rolebinding reader-bind \
+  --role=ro --serviceaccount=team-a:reader
+Get a token for the SA
+K8s v1.24+ uses expiring, bound tokens you request via a Secret or TokenRequest:
+
+
+# (A) Via TokenRequest (recommended, short-lived)
+kubectl -n team-a create token reader
+# prints a JWT token; copy it
+
+# (B) If your cluster still issues secrets for SA tokens:
+kubectl -n team-a get secret | grep reader
+kubectl -n team-a get secret <secret-name> -o jsonpath='{.data.token}' | base64 -d
